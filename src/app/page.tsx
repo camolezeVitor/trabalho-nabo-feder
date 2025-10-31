@@ -1,5 +1,9 @@
 "use client";
 
+import 'whatwg-fetch'; // Polyfill para fetch
+import 'promise-polyfill/src/polyfill'; // Polyfill para Promise
+import '@babel/polyfill'; // Para async/await e outros (instale via npm)
+
 import React from "react";
 import { Header } from "./components/header/Header";
 import { ListaDeVendas } from "./components/lista-vendas/ListaDeVendast";

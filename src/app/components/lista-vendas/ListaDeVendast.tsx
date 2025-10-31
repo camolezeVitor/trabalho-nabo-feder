@@ -145,6 +145,7 @@ export function ListaDeVendas() {
 
           <div style={{ textAlign: "right" }}>
             <button
+              type="button"  // Adicionado aqui para evitar comportamento de submit
               onClick={() => handleDelete(venda.id)}
               style={{
                 backgroundColor: "#dcdcdc",

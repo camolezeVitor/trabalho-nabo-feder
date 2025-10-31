@@ -51,6 +51,7 @@ export function NovaVenda() {
   if (!isOpen) {
     return (
       <button
+        type="button"  // Adicionado aqui para evitar comportamento de submit
         onClick={() => setIsOpen(true)}
         style={{
           backgroundColor: "#dcdcdc",

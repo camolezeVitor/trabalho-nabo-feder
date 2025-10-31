@@ -50,6 +50,7 @@ export function BotaoDeletarVenda({
 
   return (
     <button
+      type="button"  // Adicionado aqui para evitar comportamento de submit
       onClick={handleDelete}
       disabled={isLoading}
       style={{
