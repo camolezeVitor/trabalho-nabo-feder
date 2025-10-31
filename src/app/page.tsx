@@ -1,14 +1,32 @@
-"use client"
+"use client";
 
-import Image from "next/image";
+import React from "react";
 import { Header } from "./components/header/Header";
 import { ListaDeVendas } from "./components/lista-vendas/ListaDeVendast";
 
 export default function Home() {
+  const mainStyle: React.CSSProperties = {
+    width: "100%",
+    height: "100vh",
+    backgroundColor: "#d4d0c8",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+  };
+
+  const contentStyle: React.CSSProperties = {
+    flex: 1,
+    padding: "8px",
+    borderTop: "2px inset #fff",
+    overflowY: "auto",
+  };
+
   return (
-    <main className="flex flex-col gap-4 w-full h-dvh p-4 bg-neutral-100">
+    <div style={mainStyle}>
       <Header />
-      <ListaDeVendas />
-    </main>
+      <div style={contentStyle}>
+        <ListaDeVendas />
+      </div>
+    </div>
   );
 }

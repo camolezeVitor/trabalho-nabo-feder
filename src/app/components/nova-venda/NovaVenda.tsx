@@ -1,20 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Plus, Loader2 } from "lucide-react";
-import { VendaForm } from "../venda-form/VendaForm";
-import { Venda } from "../../models/venda";
+import React, { useState } from "react";
 
 export function NovaVenda() {
-  const [formData, setFormData] = useState<Venda>({
+  const [formData, setFormData] = useState({
     produto: "",
-    preco: "" as any,
+    preco: "",
     comprador: "",
     pagamento: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -25,25 +21,14 @@ export function NovaVenda() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await submitVenda();
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function submitVenda() {
-    try {
-      console.log("tamo aí??")
       const payload = {
         ...formData,
-        preco: Number((formData as any).preco),
+        preco: Number(formData.preco),
       };
 
       const response = await fetch("/api/vendas", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -56,54 +41,157 @@ export function NovaVenda() {
 
       alert("Venda registrada com sucesso!");
       location.reload();
-      console.log("Nova venda:", data.venda);
-
-      setFormData({
-        produto: "",
-        preco: "" as any,
-        comprador: "",
-        pagamento: "",
-      });
     } catch (err) {
-      console.error(err);
       alert("Falha na comunicação com o servidor.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        style={{
+          backgroundColor: "#dcdcdc",
+          border: "2px outset #fff",
+          padding: "6px 14px",
+          cursor: "pointer",
+          fontFamily: "Tahoma, sans-serif",
+        }}
+      >
+        + Nova Venda
+      </button>
+    );
+  }
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button size="xl" type="button">
-          <Plus />
-          Nova Venda
-        </Button>
-      </SheetTrigger>
+    <div
+      style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        background: "#ece9d8",
+        border: "2px solid #808080",
+        padding: "12px",
+        width: "360px",
+        fontFamily: "Tahoma, sans-serif",
+        zIndex: 1000,
+      }}
+    >
+      <h3 style={{ margin: "0 0 8px 0" }}>Nova Venda</h3>
+      <p style={{ fontSize: "12px", margin: "0 0 10px 0" }}>
+        Preencha os campos abaixo para registrar uma nova venda:
+      </p>
 
-      <SheetContent>
-        <form onSubmit={handleSubmit}>
-          <SheetHeader>
-            <SheetTitle>Realizar Nova Venda</SheetTitle>
-            <SheetDescription>
-              Preencha o formulário abaixo para registrar uma nova venda.
-            </SheetDescription>
-          </SheetHeader>
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "6px" }}>
+          <label>Produto:</label>
+          <br />
+          <input
+            type="text"
+            name="produto"
+            value={formData.produto}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              border: "1px solid #808080",
+              padding: "4px",
+              background: "#fff",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          />
+        </div>
 
-          <div className="grid flex-1 auto-rows-min gap-6 px-4">
-            <VendaForm formData={formData} onChange={handleChange} />
-          </div>
+        <div style={{ marginBottom: "6px" }}>
+          <label>Preço:</label>
+          <br />
+          <input
+            type="number"
+            name="preco"
+            value={formData.preco}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              border: "1px solid #808080",
+              padding: "4px",
+              background: "#fff",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          />
+        </div>
 
-          <SheetFooter>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Salvando..." : "Salvar"}
-            </Button>
+        <div style={{ marginBottom: "6px" }}>
+          <label>Comprador:</label>
+          <br />
+          <input
+            type="text"
+            name="comprador"
+            value={formData.comprador}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              border: "1px solid #808080",
+              padding: "4px",
+              background: "#fff",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          />
+        </div>
 
-            <SheetClose asChild>
-              <Button variant="outline">Fechar</Button>
-            </SheetClose>
-          </SheetFooter>
-        </form>
-      </SheetContent>
-    </Sheet>
+        <div style={{ marginBottom: "10px" }}>
+          <label>Forma de Pagamento:</label>
+          <br />
+          <input
+            type="text"
+            name="pagamento"
+            value={formData.pagamento}
+            onChange={handleChange}
+            required
+            style={{
+              width: "100%",
+              border: "1px solid #808080",
+              padding: "4px",
+              background: "#fff",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          />
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            style={{
+              backgroundColor: "#dcdcdc",
+              border: "2px outset #fff",
+              padding: "4px 12px",
+              cursor: "pointer",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          >
+            Fechar
+          </button>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{
+              backgroundColor: "#dcdcdc",
+              border: "2px outset #fff",
+              padding: "4px 12px",
+              cursor: "pointer",
+              fontFamily: "Tahoma, sans-serif",
+            }}
+          >
+            {isLoading ? "Salvando..." : "Salvar"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

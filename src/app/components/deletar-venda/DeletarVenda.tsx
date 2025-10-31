@@ -1,14 +1,31 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { Venda } from "../../models/venda"; // Ajuste o caminho conforme necessário
+"use client";
 
-export function BotaoDeletarVenda({ venda, onDelete }: { venda: Venda; onDelete?: () => void }) {
+import React, { useState } from "react";
+
+interface Venda {
+  id?: number;
+  produto: string;
+  preco: number;
+  comprador: string;
+  pagamento: string;
+  data: string;
+}
+
+export function BotaoDeletarVenda({
+  venda,
+  onDelete,
+}: {
+  venda: Venda;
+  onDelete?: () => void;
+}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
   async function handleDelete() {
+    const confirmDelete = confirm(
+      `Tem certeza que deseja deletar a venda do produto "${venda.produto}"?`
+    );
+    if (!confirmDelete) return;
+
     setIsLoading(true);
     try {
       const response = await fetch(`/api/vendas?id=${venda.id}`, {
@@ -23,36 +40,29 @@ export function BotaoDeletarVenda({ venda, onDelete }: { venda: Venda; onDelete?
       }
 
       alert("Venda deletada com sucesso!");
-      if (onDelete) onDelete(); 
+      if (onDelete) onDelete();
     } catch (err) {
-      console.error(err);
       alert("Falha na comunicação com o servidor.");
     } finally {
       setIsLoading(false);
-      setOpen(false);
     }
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive">Deletar</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Confirmar Deleção</AlertDialogTitle>
-          <AlertDialogDescription>
-            Tem certeza que deseja deletar esta venda? Essa ação não pode ser desfeita.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Deletando..." : "Deletar"}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <button
+      onClick={handleDelete}
+      disabled={isLoading}
+      style={{
+        backgroundColor: "#dcdcdc",
+        border: "2px outset #fff",
+        padding: "4px 10px",
+        cursor: "pointer",
+        fontFamily: "Tahoma, sans-serif",
+        fontSize: "12px",
+        color: "#000",
+      }}
+    >
+      {isLoading ? "Deletando..." : "Deletar"}
+    </button>
   );
 }
