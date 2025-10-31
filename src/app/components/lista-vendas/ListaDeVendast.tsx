@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { EditarVenda } from "../editar-venda/EditarVenda";
 
 interface Venda {
   id?: number;
@@ -41,6 +42,7 @@ export function ListaDeVendas() {
         return;
       }
       alert("Venda deletada com sucesso!");
+      // Recarrega as vendas após a deleção
       fetchVendas();
     } catch (err) {
       alert("Erro de conexão com o servidor.");
@@ -142,10 +144,15 @@ export function ListaDeVendas() {
               timeStyle: "short",
             })}
           </div>
-
+          {/* AQUI ESTÁ A MUDANÇA: Passando fetchVendas para onUpdated */}
+          <EditarVenda
+            venda={venda as any}
+            onClose={() => {}} // Função para fechar o modal/formulário de edição
+            onUpdated={fetchVendas} // Chama fetchVendas para recarregar a lista após a edição
+          />
           <div style={{ textAlign: "right" }}>
             <button
-              type="button"  // Adicionado aqui para evitar comportamento de submit
+              type="button"
               onClick={() => handleDelete(venda.id)}
               style={{
                 backgroundColor: "#dcdcdc",
